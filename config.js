@@ -17,10 +17,10 @@
 const config = {};
 
 // The OAuth client ID from the Google Developers console.
-config.oAuthClientID = 'ADD YOUR CLIENT ID';
+config.oAuthClientID = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_ID;
 
 // The OAuth client secret from the Google Developers console.
-config.oAuthclientSecret = 'ADD YOUR CLIENT SECRET';
+config.oAuthclientSecret = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_SECRET;
 
 // The callback to use for OAuth requests. This is the URL where the app is
 // running. For testing and running it locally, use 127.0.0.1.
