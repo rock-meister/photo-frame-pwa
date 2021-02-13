@@ -1,0 +1,20 @@
+{
+  "name": "Photo Frame PWA",
+  "short name": "Photo Frame PWA",
+  "icons": [
+    {
+      "src": "assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffdd",
+  "display": "standalone"
+}
