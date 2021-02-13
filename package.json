@@ -10,6 +10,10 @@
     "url": "https://github.com/googlesamples/google-photos.git"
   },
   "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "echo \"This is not a TypeScript project, so no need to build.\""
+  },
   "dependencies": {
     "@fancyapps/fancybox": "^3.5.7",
     "async": "^2.6.3",
@@ -33,5 +37,8 @@
     "request-promise": "^4.2.6",
     "session-file-store": "^1.4.0",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "es-dev-server": "^1.46.1"
   }
 }
