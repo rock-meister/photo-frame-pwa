@@ -53,14 +53,13 @@ function showPreview(source, mediaItems) {
     const thumbnailUrl = `${item.baseUrl}=w256-h256`;
     // Constuct the URL to the image in its original size based on its width and
     // height.
-    const fullUrl = `${item.baseUrl}=w${item.mediaMetadata.width}-h${
-        item.mediaMetadata.height}`;
+    const fullUrl = `${item.baseUrl}=w${item.mediaMetadata.width}-h${item.mediaMetadata.height}`;
 
     // Compile the caption, conisting of the description, model and time.
     const description = item.description ? item.description : '';
     const model = item.mediaMetadata.photo.cameraModel ?
-        `#Shot on ${item.mediaMetadata.photo.cameraModel}` :
-        '';
+      `#Shot on ${item.mediaMetadata.photo.cameraModel}` :
+      '';
     const time = item.mediaMetadata.creationTime;
     const captionText = `${description} ${model} (${time})`
 
@@ -72,24 +71,24 @@ function showPreview(source, mediaItems) {
     // The original width and height are part of the mediaMetadata of
     // an image media item from the API.
     const linkToFullImage = $('<a />')
-                                .attr('href', fullUrl)
-                                .attr('data-fancybox', 'gallery')
-                                .attr('data-width', item.mediaMetadata.width)
-                                .attr('data-height', item.mediaMetadata.height);
+      .attr('href', fullUrl)
+      .attr('data-fancybox', 'gallery')
+      .attr('data-width', item.mediaMetadata.width)
+      .attr('data-height', item.mediaMetadata.height);
     // Add the thumbnail image to the link to the full image for fancybox.
     const thumbnailImage = $('<img />')
-                               .attr('src', thumbnailUrl)
-                               .attr('alt', captionText)
-                               .addClass('img-fluid rounded thumbnail');
+      .attr('src', thumbnailUrl)
+      .attr('alt', captionText)
+      .addClass('img-fluid rounded thumbnail');
     linkToFullImage.append(thumbnailImage);
 
     // The caption consists of the caption text and a link to open the image
     // in Google Photos.
     const imageCaption =
-        $('<figcaption />').addClass('hidden').text(captionText);
+      $('<figcaption />').addClass('hidden').text(captionText);
     const linkToGooglePhotos = $('<a />')
-                                   .attr('href', item.productUrl)
-                                   .text('[Click to open in Google Photos]');
+      .attr('href', item.productUrl)
+      .text('[Click to open in Google Photos]');
     imageCaption.append($('<br />'));
     imageCaption.append(linkToGooglePhotos);
     linkToFullImage.append(imageCaption);
@@ -124,6 +123,11 @@ function loadQueue() {
 }
 
 $(document).ready(() => {
+  if (localStorage.getItem('fancybox-data-option') === null) {
+    window.localStorage.setItem('fancybox-data-option', JSON.stringify($.fancybox.defaults));
+  } else {
+    $.fancybox.defaults = localStorage.getItem('fancybox-data-option')
+  }
   // Load the queue of photos selected by the user for the photo
   loadQueue();
 
@@ -132,14 +136,14 @@ $(document).ready(() => {
     selector: '[data-fancybox="gallery"]',
     loop: true,
     buttons: ['slideShow', 'fullScreen', 'close'],
-    image: {preload: true},
+    image: { preload: true },
     transitionEffect: 'fade',
     transitionDuration: 1000,
-    fullScreen: {autoStart: false},
+    fullScreen: { autoStart: false },
     // Automatically advance after 3s to next photo.
-    slideShow: {autoStart: true, speed: 3000},
+    slideShow: { autoStart: true, speed: 3000 },
     // Display the contents figcaption element as the caption of an image
-    caption: function(instance, item) {
+    caption: function (instance, item) {
       return $(this).find('figcaption').html();
     }
   });
@@ -147,7 +151,7 @@ $(document).ready(() => {
   // Clicking the 'view fullscreen' button opens the gallery from the first
   // image.
   $('#startSlideshow')
-      .on('click', (e) => $('#images-container a').first().click());
+    .on('click', (e) => $('#images-container a').first().click());
 
   // Clicking log out opens the log out screen.
   $('#logout').on('click', (e) => {

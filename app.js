@@ -75,7 +75,7 @@ albumCache.init();
 // but resubmitting the search query ensures that the photo frame displays
 // any new images that match the search criteria (or that have been added
 // to an album).
-const storage = persist.create({dir: 'persist-storage/'});
+const storage = persist.create({ dir: 'persist-storage/' });
 storage.init();
 
 // Set up OAuth 2.0 authentication through the passport.js library.
@@ -86,12 +86,14 @@ auth(passport);
 // Set up a session middleware to handle user sessions.
 // NOTE: A secret is used to sign the cookie. This is just used for this sample
 // app and should be changed.
+/*
 const sessionMiddleware = session({
   resave: true,
   saveUninitialized: true,
   store: new fileStore({}),
   secret: 'photo frame sample',
 });
+*/
 
 // Console transport for winton.
 const consoleTransport = new winston.transports.Console();
@@ -115,9 +117,9 @@ if (process.env.DEBUG) {
   // Enable express.js debugging. This logs all received requests.
   app.use(expressWinston.logger({
     transports: [
-          consoleTransport
-        ],
-        winstonInstance: logger
+      consoleTransport
+    ],
+    winstonInstance: logger
   }));
   // Enable request debugging.
   require('request-promise').debug = true;
@@ -131,21 +133,21 @@ if (process.env.DEBUG) {
 app.use(express.static('static'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist/'));
 app.use(
-    '/fancybox',
-    express.static(__dirname + '/node_modules/@fancyapps/fancybox/dist/'));
+  '/fancybox',
+  express.static(__dirname + '/node_modules/@fancyapps/fancybox/dist/'));
 app.use(
-    '/mdlite',
-    express.static(__dirname + '/node_modules/material-design-lite/dist/'));
+  '/mdlite',
+  express.static(__dirname + '/node_modules/material-design-lite/dist/'));
 
 
 // Parse application/json request data.
 app.use(bodyParser.json());
 
 // Parse application/xwww-form-urlencoded request data.
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Enable user session handling.
-app.use(sessionMiddleware);
+// app.use(sessionMiddleware);
 
 // Set up passport and session handling.
 app.use(passport.initialize());
@@ -157,7 +159,7 @@ app.use((req, res, next) => {
   res.locals.name = '-';
   if (req.user && req.user.profile && req.user.profile.name) {
     res.locals.name =
-        req.user.profile.name.givenName || req.user.profile.displayName;
+      req.user.profile.name.givenName || req.user.profile.displayName;
   }
 
   res.locals.avatarUrl = '';
@@ -197,14 +199,14 @@ app.get('/auth/google', passport.authenticate('google', {
 
 // Callback receiver for the OAuth process after log in.
 app.get(
-    '/auth/google/callback',
-    passport.authenticate(
-        'google', {failureRedirect: '/', failureFlash: true, session: true}),
-    (req, res) => {
-      // User has logged in.
-      logger.info('User has logged in.');
-      res.redirect('/');
-    });
+  '/auth/google/callback',
+  passport.authenticate(
+    'google', { failureRedirect: '/', failureFlash: true, session: true }),
+  (req, res) => {
+    // User has logged in.
+    logger.info('User has logged in.');
+    res.redirect('/');
+  });
 
 // Loads the search page if the user is authenticated.
 // This page includes the search form.
@@ -216,6 +218,10 @@ app.get('/search', (req, res) => {
 // This page displays a list of albums owned by the user.
 app.get('/album', (req, res) => {
   renderIfAuthenticated(req, res, 'pages/album');
+});
+
+app.get('/options', (req, res) => {
+  renderIfAuthenticated(req, res, 'pages/options');
 });
 
 
@@ -234,39 +240,39 @@ app.post('/loadFromSearch', async (req, res) => {
 
   // Construct a filter for photos.
   // Other parameters are added below based on the form submission.
-  const filters = {contentFilter: {}, mediaTypeFilter: {mediaTypes: ['PHOTO']}};
+  const filters = { contentFilter: {}, mediaTypeFilter: { mediaTypes: ['PHOTO'] } };
 
   if (req.body.includedCategories) {
     // Included categories are set in the form. Add them to the filter.
     filters.contentFilter.includedContentCategories =
-        [req.body.includedCategories];
+      [req.body.includedCategories];
   }
 
   if (req.body.excludedCategories) {
     // Excluded categories are set in the form. Add them to the filter.
     filters.contentFilter.excludedContentCategories =
-        [req.body.excludedCategories];
+      [req.body.excludedCategories];
   }
 
   // Add a date filter if set, either as exact or as range.
   if (req.body.dateFilter == 'exact') {
     filters.dateFilter = {
       dates: constructDate(
-          req.body.exactYear, req.body.exactMonth, req.body.exactDay),
+        req.body.exactYear, req.body.exactMonth, req.body.exactDay),
     }
   } else if (req.body.dateFilter == 'range') {
     filters.dateFilter = {
       ranges: [{
         startDate: constructDate(
-            req.body.startYear, req.body.startMonth, req.body.startDay),
+          req.body.startYear, req.body.startMonth, req.body.startDay),
         endDate:
-            constructDate(req.body.endYear, req.body.endMonth, req.body.endDay),
+          constructDate(req.body.endYear, req.body.endMonth, req.body.endDay),
       }]
     }
   }
 
   // Create the parameters that will be submitted to the Library API.
-  const parameters = {filters};
+  const parameters = { filters };
 
   // Submit the search request to the API and wait for the result.
   const data = await libraryApiSearch(authToken, parameters);
@@ -292,7 +298,7 @@ app.post('/loadFromAlbum', async (req, res) => {
   // where the only parameter is the album ID.
   // Note that no other filters can be set, so this search will
   // also return videos that are otherwise filtered out in libraryApiSearch(..).
-  const parameters = {albumId};
+  const parameters = { albumId };
 
   // Submit the search request to the API and wait for the result.
   const data = await libraryApiSearch(authToken, parameters);
@@ -356,12 +362,12 @@ app.get('/getQueue', async (req, res) => {
   if (cachedPhotos) {
     // Items are still cached. Return them.
     logger.verbose('Returning cached photos.');
-    res.status(200).send({photos: cachedPhotos, parameters: stored.parameters});
+    res.status(200).send({ photos: cachedPhotos, parameters: stored.parameters });
   } else if (stored && stored.parameters) {
     // Items are no longer cached. Resubmit the stored search query and return
     // the result.
     logger.verbose(
-        `Resubmitting filter search ${JSON.stringify(stored.parameters)}`);
+      `Resubmitting filter search ${JSON.stringify(stored.parameters)}`);
     const data = await libraryApiSearch(authToken, stored.parameters);
     returnPhotos(res, userId, data, stored.parameters);
   } else {
@@ -411,10 +417,10 @@ function returnPhotos(res, userId, data, searchParameter) {
     mediaItemCache.setItemSync(userId, data.photos);
     // Store the parameters that were used to load these images. They are used
     // to resubmit the query after the cache expires.
-    storage.setItemSync(userId, {parameters: searchParameter});
+    storage.setItemSync(userId, { parameters: searchParameter });
 
     // Return the photos and parameters back int the response.
-    res.status(200).send({photos: data.photos, parameters: searchParameter});
+    res.status(200).send({ photos: data.photos, parameters: searchParameter });
   }
 }
 
@@ -456,15 +462,15 @@ async function libraryApiSearch(authToken, parameters) {
     // and while there is a nextPageToken to load more items.
     do {
       logger.info(
-          `Submitting search with parameters: ${JSON.stringify(parameters)}`);
+        `Submitting search with parameters: ${JSON.stringify(parameters)}`);
 
       // Make a POST request to search the library or album
       const result =
-          await request.post(config.apiEndpoint + '/v1/mediaItems:search', {
-            headers: {'Content-Type': 'application/json'},
-            json: parameters,
-            auth: {'bearer': authToken},
-          });
+        await request.post(config.apiEndpoint + '/v1/mediaItems:search', {
+          headers: { 'Content-Type': 'application/json' },
+          json: parameters,
+          auth: { 'bearer': authToken },
+        });
 
       logger.debug(`Response: ${result}`);
 
@@ -474,11 +480,11 @@ async function libraryApiSearch(authToken, parameters) {
       // Media type filters can't be applied if an album is loaded, so an extra
       // filter step is required here to ensure that only images are returned.
       const items = result && result.mediaItems ?
-          result.mediaItems
-              .filter(x => x)  // Filter empty or invalid items.
-              // Only keep media items with an image mime type.
-              .filter(x => x.mimeType && x.mimeType.startsWith('image/')) :
-          [];
+        result.mediaItems
+          .filter(x => x)  // Filter empty or invalid items.
+          // Only keep media items with an image mime type.
+          .filter(x => x.mimeType && x.mimeType.startsWith('image/')) :
+        [];
 
       photos = photos.concat(items);
 
@@ -486,25 +492,24 @@ async function libraryApiSearch(authToken, parameters) {
       parameters.pageToken = result.nextPageToken;
 
       logger.verbose(
-          `Found ${items.length} images in this request. Total images: ${
-              photos.length}`);
+        `Found ${items.length} images in this request. Total images: ${photos.length}`);
 
       // Loop until the required number of photos has been loaded or until there
       // are no more photos, ie. there is no pageToken.
     } while (photos.length < config.photosToLoad &&
-             parameters.pageToken != null);
+      parameters.pageToken != null);
 
   } catch (err) {
     // If the error is a StatusCodeError, it contains an error.error object that
     // should be returned. It has a name, statuscode and message in the correct
     // format. Otherwise extract the properties.
     error = err.error.error ||
-        {name: err.name, code: err.statusCode, message: err.message};
+      { name: err.name, code: err.statusCode, message: err.message };
     logger.error(error);
   }
 
   logger.info('Search complete.');
-  return {photos, parameters, error};
+  return { photos, parameters, error };
 }
 
 // Returns a list of all albums owner by the logged in user from the Library
@@ -513,7 +518,7 @@ async function libraryApiGetAlbums(authToken) {
   let albums = [];
   let nextPageToken = null;
   let error = null;
-  let parameters = {pageSize: config.albumPageSize};
+  let parameters = { pageSize: config.albumPageSize };
 
   try {
     // Loop while there is a nextpageToken property in the response until all
@@ -523,10 +528,10 @@ async function libraryApiGetAlbums(authToken) {
       // Make a GET request to load the albums with optional parameters (the
       // pageToken if set).
       const result = await request.get(config.apiEndpoint + '/v1/albums', {
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         qs: parameters,
         json: true,
-        auth: {'bearer': authToken},
+        auth: { 'bearer': authToken },
       });
 
       logger.debug(`Response: ${result}`);
@@ -548,12 +553,12 @@ async function libraryApiGetAlbums(authToken) {
     // should be returned. It has a name, statuscode and message in the correct
     // format. Otherwise extract the properties.
     error = err.error.error ||
-        {name: err.name, code: err.statusCode, message: err.message};
+      { name: err.name, code: err.statusCode, message: err.message };
     logger.error(error);
   }
 
   logger.info('Albums loaded.');
-  return {albums, error};
+  return { albums, error };
 }
 
 // [END app]
