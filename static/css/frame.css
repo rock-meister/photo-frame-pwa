@@ -231,3 +231,13 @@ p .gp-button {
 .filter-group:last-child {
   padding-bottom: 2vh;
 }
+
+/* Options page */
+
+.pfpwa-options-group {
+  padding-top: 2vh;
+}
+
+.pfpwa-options-group:last-child {
+  padding-bottom: 2vh;
+}

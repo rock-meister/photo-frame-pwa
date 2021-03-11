@@ -1,0 +1,36 @@
+<% include ../partials/head %>
+
+<% include ../partials/dialogs %>
+	<section class="sample-content">
+		<h2>Options setting</h2>
+		<p class="subhead mdl-color-text--grey-700">Set various options for controlling the Photo-Frame-PWA.</p>
+		<form id="pfpwa-options">
+			<div class="pfpwa-options-group">
+				<h3>Group 1 setting</h3>
+				<div class="mdl-grid">
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="pfpwa-options-loop">
+						<input type="checkbox" id="pfpwa-options-loop" class="mdl-switch__input" checked>
+						<span class="mdl-switch__label">Loop</span>
+					</label>
+					<label class="mdl-slider mdl-js-slider" for="pfpwa-options-transitionDuration">
+						<input type="range" id="pfpwa-options-transitionDuration-input" class="mdl-range__input"
+							min="500" max="2500" tabindex="0"
+							oninput = "setTransitionDuration(this.value)" onchange = "setTransitionDuration(this.value)">
+						<output id="pfpwa-options-transitionDuration-output">1366</output>
+					</label>
+				</div>
+			</div>
+			<!-- Accent-colored raised button with ripple -->
+			<div class="floating-button">
+				<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+					<i class="material-icons">save</i>
+					<span class="float-btn-label">Save</span>
+				</button>
+			</div>
+		</form>
+	</section>
+
+<% include ../partials/js %>
+<script src="/js/options.js"></script>
+
+<% include ../partials/footer %>
