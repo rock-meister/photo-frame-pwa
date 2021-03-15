@@ -114,6 +114,7 @@ function loadQueue() {
       hideLoadingDialog();
       showPreview(data.parameters, data.photos);
       hideLoadingDialog();
+      if ( data.photos) setTimeout ( (e) => $('#images-container a').first().click(), 30);
       console.log('Loaded queue.');
     },
     error: (data) => {
@@ -134,8 +135,8 @@ $(document).ready(() => {
     buttons: ['slideShow', 'fullScreen', 'close'],
     image: {preload: true},
     transitionEffect: 'fade',
-    transitionDuration: 1000,
-    fullScreen: {autoStart: false},
+    transitionDuration: 2000,
+    fullScreen: {autoStart: !false},
     // Automatically advance after 3s to next photo.
     slideShow: {autoStart: true, speed: 3000},
     // Display the contents figcaption element as the caption of an image
@@ -148,6 +149,7 @@ $(document).ready(() => {
   // image.
   $('#startSlideshow')
       .on('click', (e) => $('#images-container a').first().click());
+
 
   // Clicking log out opens the log out screen.
   $('#logout').on('click', (e) => {
