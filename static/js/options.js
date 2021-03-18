@@ -12,85 +12,111 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let def_fancybox_options = {
-  selector: '[data-fancybox="gallery"]',
-  loop: true,
-  buttons: [
-    "zoom",
-    //"share",
-    "slideShow",
-    "fullScreen",
-    //"download",
-    "thumbs",
-    "close"
-  ],
-  image: {
-    preload: true
-  },
-  transitionEffect: 'fade',
-  transitionDuration: 1366,
-  fullScreen: {
-    autoStart: true
-  },
-  // Automatically advance after 3s to next photo.
-  slideShow: {
-    autoStart: true,
-    speed: 3000
-  },
-  // Display the contents figcaption element as the caption of an image
-  // TODO not sure how function will get in and out of JSON string
-  /*
-  caption: function(instance, item) {
-    return $(this).find('figcaption').html();
-  },
-  */
-  thumbs: {
-    autoStart: false
-  },
-  //  spinnerTpl: '<div hidden class="fancybox-loading"></div>',
-  spinnerTpl: "",
-  infobar: false,
-};
-
-var fancybox_options;
-// Save the settings.
-function saveSettings() {
-  window.localStorage.setItem('fancybox_options', JSON.stringify(fancybox_options));
-  console.log('options:saveSettings');
-}
-
-// Load the settings.
-function loadSettings() {
-  console.log('options:loadSettings');
-  var fancybox_options_json = window.localStorage.getItem('fancybox_options');
-  if (fancybox_options_json)
-    fancybox_options = JSON.parse(fancybox_options_json);
-  else
-    fancybox_options = def_fancybox_options;
-  setTransitionDuration(fancybox_options.transitionDuration);
-}
 
 function setTransitionDuration(value) {
   fancybox_options.transitionDuration = value;
-  document.getElementById("pfpwa-options-transitionDuration-output").innerHTML  =  value;
+  console.log('options:setTransitionDuration = ', fancybox_options.transitionDuration);
+  document.getElementById("fancybox-transitionDuration-output").innerHTML  =  value;
+  //$().fancybox(fancybox_options);
 }
 
+function setSlideshowSpeed(value) {
+  fancybox_options.slideShow.speed = value;
+  console.log('options:setSlideshowSpeed = ', fancybox_options.slideShow.speed);
+  document.getElementById("fancybox-slideshow-speed-output").innerHTML  =  value;
+  //$().fancybox(fancybox_options);
+}
+
+function setFancyboxOptionsFromHtml() {
+  fancybox_options = def_fancybox_options;
+  // Selector hard coded
+  fancybox_options.selector = '[data-fancybox="gallery"]'
+  // Loop
+  console.log('options:setFancyboxOptionsFromHtml:loop checked=', document.getElementById("fancybox-loop").checked);
+  console.log('options:setFancyboxOptionsFromHtml:loop value=', document.getElementById("fancybox-loop").value);
+  fancybox_options.loop = document.getElementById("fancybox-loop").checked;
+  console.log('options:setFancyboxOptionsFromHtml:loop=', fancybox_options.loop)
+  // Transition Duration
+  fancybox_options.transitionDuration = document.getElementById("fancybox-transitionDuration").value;
+  // Transition Effect
+  fancybox_options.transitionEffect = document.getElementById("fancybox-transitionEffect").value;
+  // Buttons
+  console.log('options:setFancyboxOptionsFromHtml:buttons', fancybox_options.buttons);
+  var selected = [];
+  $('#fancybox_buttons input:checked').each(function() {
+    selected.push($(this).attr('value'));
+  });
+  fancybox_options.buttons = selected;
+  console.log('options:setFancyboxOptionsFromHtml:buttons', fancybox_options.buttons);
+  // fancybox-fullscreen-autostart
+  fancybox_options.fullScreen.autoStart = document.getElementById("fancybox-fullscreen-autostart").checked;
+  // fancybox-image-preload
+  fancybox_options.image.preload = document.getElementById("fancybox-image-preload").checked;
+  // fancybox-infobar
+  fancybox_options.infobar = document.getElementById("fancybox-infobar").checked;
+  // fancybox-slideshow-autostart
+  fancybox_options.slideShow.autoStart = document.getElementById("fancybox-slideshow-autostart").checked;
+  // fancybox-slideshow-speed
+  fancybox_options.slideShow.speed = document.getElementById("fancybox-slideshow-speed").value;
+  console.log('options:setFancyboxOptions:fancybox_options=', fancybox_options);
+  //$().fancybox('options:setFancyboxOptions:fancybox_options=',fancybox_options);
+}
+
+function handleSwitch(id, state) {
+  if (state) {
+    document.getElementById(id).parentNode.MaterialSwitch.on();
+  } else {
+    document.getElementById(id).parentNode.MaterialSwitch.off();
+  }
+}
+
+function handleCheckbox(id, checked) {
+  if (checked) {
+    document.getElementById(id).parentNode.MaterialCheckbox.check();
+  } else {
+    document.getElementById(id).parentNode.MaterialCheckbox.uncheck();
+  }
+}
+
+function setHtmlFromFancyboxOptions() {
+  // Loop
+  handleSwitch("fancybox-loop", fancybox_options.loop);
+  
+  // Transition Duration
+  document.getElementById("fancybox-transitionDuration").value = fancybox_options.transitionDuration;
+  document.getElementById("fancybox-transitionDuration-output").value = fancybox_options.transitionDuration;
+  // Transition Effect
+  document.getElementById("fancybox-transitionEffect").value = fancybox_options.transitionEffect;
+  // Buttons
+  $('#fancybox_buttons input').each(function() {
+    // ['a', 'b', 'c'].includes('b')
+    handleCheckbox($(this).attr('id'), fancybox_options.buttons.includes($(this).attr('value')));
+  });
+  
+  // fancybox-fullscreen-autostart
+  handleSwitch("fancybox-fullscreen-autostart", fancybox_options.fullScreen.autoStart);
+  // fancybox-image-preload
+  handleSwitch("fancybox-image-preload", fancybox_options.image.preload);
+  // fancybox-infobar
+  handleSwitch("fancybox-infobar", fancybox_options.infobar);
+  // fancybox-slideshow-autostart
+  handleSwitch("fancybox-slideshow-autostart", fancybox_options.slideShow.autoStart);
+  // fancybox-slideshow-speed
+  document.getElementById("fancybox-slideshow-speed").value = fancybox_options.slideShow.speed;
+  document.getElementById("fancybox-slideshow-speed-output").value = fancybox_options.slideShow.speed;
+}
 
 
 $(document).ready(() => {
   // load the current settings
   loadSettings();
+  setHtmlFromFancyboxOptions();
+  //setTransitionDuration(fancybox_options.transitionDuration);
   // When the options form is submitted, save settings.
   $('#pfpwa-options').on('submit', (e) => {
     e.preventDefault();
-    //showLoadingDialog();  TODO:  Should we show a saving dialog?
+    // showLoadingDialog();  //TODO:  How to show a saving dialog?
+    setFancyboxOptionsFromHtml();
     saveSettings();
   });
 });
-
-function getFancyboxOptions() {
-  return fancybox_options;
-}
-
-//export default { getFancyboxOptions };
-//module.exports = { getFancyboxOptions };

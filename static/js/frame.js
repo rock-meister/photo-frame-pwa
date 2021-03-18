@@ -126,57 +126,6 @@ function loadQueue() {
   });
 }
 
-let def_fancybox_options = {
-  selector: '[data-fancybox="gallery"]',
-  loop: true,
-  buttons: [
-    "zoom",
-    //"share",
-    "slideShow",
-    "fullScreen",
-    //"download",
-    "thumbs",
-    "close"
-  ],
-  image: {
-    preload: true
-  },
-  transitionEffect: 'fade',
-  transitionDuration: 1366,
-  fullScreen: {
-    autoStart: true
-  },
-  // Automatically advance after 3s to next photo.
-  slideShow: {
-    autoStart: true,
-    speed: 3000
-  },
-  // Display the contents figcaption element as the caption of an image
-  // TODO not sure how function will get in and out of JSON string
-  /*
-  caption: function(instance, item) {
-    return $(this).find('figcaption').html();
-  },
-  */
-  thumbs: {
-    autoStart: false
-  },
-  //  spinnerTpl: '<div hidden class="fancybox-loading"></div>',
-  spinnerTpl: "",
-  infobar: false,
-};
-
-var fancybox_options;
-// Load the settings.
-function loadSettings() {
-  console.log('frame:loadSettings');
-  var fancybox_options_json = window.localStorage.getItem('fancybox_options');
-  if (fancybox_options_json)
-    fancybox_options = JSON.parse(fancybox_options_json);
-  else
-    fancybox_options = def_fancybox_options;
-}
-
 $(document).ready(() => {
   // Load the queue of photos selected by the user for the photo
   loadQueue();
