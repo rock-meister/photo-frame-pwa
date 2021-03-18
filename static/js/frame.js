@@ -117,6 +117,7 @@ function loadQueue() {
       hideLoadingDialog();
       showPreview(data.parameters, data.photos);
       hideLoadingDialog();
+      if ( data.photos) setTimeout ( (e) => $('#images-container a').first().click(), 30);
       console.log('Loaded queue.');
     },
     error: (data) => {
@@ -138,6 +139,7 @@ $(document).ready(() => {
   // image.
   $('#startSlideshow')
       .on('click', (e) => $('#images-container a').first().click());
+
 
   // Clicking log out opens the log out screen.
   $('#logout').on('click', (e) => {

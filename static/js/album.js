@@ -112,7 +112,7 @@ function listAlbums() {
             $('<button />')
                 .addClass(
                     'mdl-button mdl-js-button mdl-button--raised mdl-button--accent')
-                .text('Add to frame');
+                .text('Start Show');
         linkToAddToPhotoFrame.append(addToPhotoFrameButton);
 
         // The 'open in Google Photos' link.
