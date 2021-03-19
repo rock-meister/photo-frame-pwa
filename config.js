@@ -22,12 +22,19 @@ config.oAuthClientID = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_ID;
 // The OAuth client secret from the Google Developers console.
 config.oAuthclientSecret = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_SECRET;
 
+// The PORT to run.
+config.port = process.env.PHOTO_FRAME_PWA_PORT;
+if (!config.port) {
+  config.port = "8080";
+  console.log('default config.port', config.port);
+}
+
 // The callback to use for OAuth requests. This is the URL where the app is
 // running. For testing and running it locally, use 127.0.0.1.
-config.oAuthCallbackUrl = 'http://127.0.0.1:8080/auth/google/callback';
+var str1 = "http://127.0.0.1:";
+var str3 = "/auth/google/callback";
+config.oAuthCallbackUrl = str1.concat(config.port, str3);;
 
-// The port where the app should listen for requests.
-config.port = 8080;
 
 // The scopes to request. The app requires the photoslibrary.readonly and
 // plus.me scopes.
