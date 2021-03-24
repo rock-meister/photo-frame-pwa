@@ -14,6 +14,7 @@
 
 // This file contains the configuration options for this sample app.
 
+// This is a trivail add to force a push
 function isHeroku() {
   return process.env.NODE && ~process.env.NODE.indexOf("heroku") ? true : false;
 }
