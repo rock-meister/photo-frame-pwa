@@ -36,8 +36,8 @@ if (!isHeroku()) {
   //config.port = 8080;
   config.port = 8111;
 } else {
-  config.oAuthCallbackUrl = 'https://equinox-21.herokuapp.com/auth/google/callback';
-  config.port = 80;
+  config.oAuthCallbackUrl = 'https://equinox-21.herokuapp.com:8080/auth/google/callback';
+  config.port = 8080;
 }
 // The scopes to request. The app requires the photoslibrary.readonly and
 // plus.me scopes.
