@@ -14,6 +14,11 @@
 
 // This file contains the configuration options for this sample app.
 
+// This is a trivail add to force a push
+function isHeroku() {
+  return process.env.NODE && ~process.env.NODE.indexOf("heroku") ? true : false;
+}
+
 const config = {};
 
 // The OAuth client ID from the Google Developers console.
@@ -22,20 +27,18 @@ config.oAuthClientID = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_ID;
 // The OAuth client secret from the Google Developers console.
 config.oAuthclientSecret = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_SECRET;
 
-// The PORT to run.
-config.port = process.env.PHOTO_FRAME_PWA_PORT;
-if (!config.port) {
-  config.port = "8080";
-  console.log('default config.port', config.port);
+if (!isHeroku()) {
+  // The callback to use for OAuth requests. This is the URL where the app is
+  // running. For testing and running it locally, use 127.0.0.1.
+  config.oAuthCallbackUrl = 'http://127.0.0.1:8111/auth/google/callback';
+
+  // The port where the app should listen for requests.
+  //config.port = 8080;
+  config.port = 8111;
+} else {
+  config.oAuthCallbackUrl = 'https://equinox-21.herokuapp.com/auth/google/callback';
+  config.port = process.env.PORT;
 }
-
-// The callback to use for OAuth requests. This is the URL where the app is
-// running. For testing and running it locally, use 127.0.0.1.
-var str1 = "http://127.0.0.1:";
-var str3 = "/auth/google/callback";
-config.oAuthCallbackUrl = str1.concat(config.port, str3);;
-
-
 // The scopes to request. The app requires the photoslibrary.readonly and
 // plus.me scopes.
 config.scopes = [
