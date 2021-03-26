@@ -218,6 +218,12 @@ app.get('/album', (req, res) => {
   renderIfAuthenticated(req, res, 'pages/album');
 });
 
+// Loads the options page if the user is authenticated.
+// This page includes the settings form.
+app.get('/options', (req, res) => {
+  renderIfAuthenticated(req, res, 'pages/options');
+});
+
 
 // Handles form submissions from the search page.
 // The user has made a selection and wants to load photos into the photo frame

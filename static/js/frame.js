@@ -11,6 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//import options from "./options";
+//import { getFancyboxOptions } from './options';
+//getFancyboxOptions = require('./options.js');
 
 // Empties the grid of images.
 function clearPreview() {
@@ -127,23 +130,10 @@ function loadQueue() {
 $(document).ready(() => {
   // Load the queue of photos selected by the user for the photo
   loadQueue();
+  loadSettings();
 
-  // Set up the fancybox image gallery.
-  $().fancybox({
-    selector: '[data-fancybox="gallery"]',
-    loop: true,
-    buttons: ['slideShow', 'fullScreen', 'close'],
-    image: {preload: true},
-    transitionEffect: 'fade',
-    transitionDuration: 2000,
-    fullScreen: {autoStart: !false},
-    // Automatically advance after 3s to next photo.
-    slideShow: {autoStart: true, speed: 3000},
-    // Display the contents figcaption element as the caption of an image
-    caption: function(instance, item) {
-      return $(this).find('figcaption').html();
-    }
-  });
+  console.log('fancybox options', fancybox_options);
+  $().fancybox(fancybox_options);
 
   // Clicking the 'view fullscreen' button opens the gallery from the first
   // image.

@@ -1,0 +1,115 @@
+<% include ../partials/head %>
+
+<% include ../partials/dialogs %>
+	<section class="sample-content">
+		<h2>Options setting</h2>
+		<p class="subhead mdl-color-text--grey-700">Set various options for controlling the Photo-Frame-PWA.</p>
+		<form id="pfpwa-options">
+			<div class="pfpwa-options-group">
+				<h3>Fancybox setting</h3>
+				<div class="mdl-grid">					
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fancybox-loop">
+						<input type="checkbox" id="fancybox-loop" class="mdl-switch__input">
+						<span class="mdl-switch__label">Loop</span>
+					</label>
+					<label class="mdl-slider mdl-js-slider" for="fancybox-transitionDuration">
+						<input type="range" id="fancybox-transitionDuration" class="mdl-range__input"
+							min="100" max="10000" tabindex="0"
+							oninput = "setTransitionDuration(this.value)" onchange = "setTransitionDuration(this.value)">
+						<output for="fancybox-transitionDuration" id="fancybox-transitionDuration-output">1366</output>
+					</label>
+				</div>
+			</div>
+			<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <select class="mdl-textfield__input" id="fancybox-transitionEffect" name="transitionEffect">
+          <option value="fade">fade</option>
+          <option value="slide">slide</option>
+          <option value="circular">circular</option>
+          <option value="tube">tube</option>
+          <option value="zoom-in-out">zoom-in-out</option>
+					<option value="rotate">rotate</option>
+        </select>
+        <span class="mdl-textfield__label" for="transitionEffect">Transition Effect</span>
+      </div>
+			<div class="fancybox-button-group">
+				<h4>Select Buttons to show</h4>
+				<div id="fancybox_buttons" class="mdl-grid">
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_zoom">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_zoom" class="mdl-checkbox__input" value="zoom">
+						<span class="mdl-checkbox__label">Zoom</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_share">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_share" class="mdl-checkbox__input"
+							value="share">
+						<span class="mdl-checkbox__label">Share</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_slideshow">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_slideshow" class="mdl-checkbox__input"
+							value="slideshow">
+						<span class="mdl-checkbox__label">Slideshow</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_fullscreen">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_fullscreen" class="mdl-checkbox__input" value="fullscreen">
+						<span class="mdl-checkbox__label">Fullscreen</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_download">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_download" class="mdl-checkbox__input"
+							value="download">
+						<span class="mdl-checkbox__label">Download</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_thumbs">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_thumbs" class="mdl-checkbox__input"
+							value="thumbs">
+						<span class="mdl-checkbox__label">Thumbs</span>
+					</label>
+					<label class="mdl-cell mdl-cell--4-col mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+						for="fancybox_button_close">
+						<input type="checkbox" name="fancybox_button" id="fancybox_button_close" class="mdl-checkbox__input"
+							value="close">
+						<span class="mdl-checkbox__label">Close</span>
+					</label>
+				</div>
+			</div>
+			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fancybox-fullscreen-autostart">
+				<span class="mdl-switch__label">Fullscreen autostart</span>
+				<input type="checkbox" id="fancybox-fullscreen-autostart" class="mdl-switch__input" checked>
+			</label>
+			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fancybox-image-preload">
+				<span class="mdl-switch__label">Image Preload</span>
+				<input type="checkbox" id="fancybox-image-preload" class="mdl-switch__input" checked>
+			</label>
+			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fancybox-infobar">
+				<span class="mdl-switch__label">Infobar</span>
+				<input type="checkbox" id="fancybox-infobar" class="mdl-switch__input" checked>
+			</label>
+			<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fancybox-slideshow-autostart">
+				<span class="mdl-switch__label">Slideshow Autostart</span>
+				<input type="checkbox" id="fancybox-slideshow-autostart" class="mdl-switch__input" checked>
+			</label>
+			<label class="mdl-slider mdl-js-slider" for="fancybox-slideshow-speed">
+				<input type="range" id="fancybox-slideshow-speed" class="mdl-range__input"
+					min="1000" max="10000" tabindex="0"
+					oninput = "setSlideshowSpeed(this.value)" onchange = "setSlideshowSpeed(this.value)">
+				<output for="fancybox-slideshow-speed" id="fancybox-slideshow-speed-output">3000</output>
+			</label>
+			<!-- Accent-colored raised button with ripple -->
+			<div class="floating-button">
+				<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+					<i class="material-icons">save</i>
+					<span class="float-btn-label">Save</span>
+				</button>
+			</div>
+		</form>
+	</section>
+
+<% include ../partials/js %>
+<script src="/js/fancybox_options.js"></script>
+<script src="/js/options.js"></script>
+
+<% include ../partials/footer %>
