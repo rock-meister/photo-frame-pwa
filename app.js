@@ -383,6 +383,7 @@ app.get('/getQueue', async (req, res) => {
 // Start the server
 server.listen(config.port, () => {
   console.log(`App listening on port ${config.port}`);
+  console.log(`Debug : process.env.PORT ${process.env.PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
 
