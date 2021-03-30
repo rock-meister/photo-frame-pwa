@@ -14,9 +14,39 @@
 
 // This file contains the configuration options for this sample app.
 
-// This is a trivail add to force a push
 function isHeroku() {
-  return process.env.NODE && ~process.env.NODE.indexOf("heroku") ? true : false;
+  return process.env.FQDN && ~process.env.FQDN.indexOf("heroku") ? true : false;
+}
+
+function isAzure() {
+  return process.env.WEBSITE_HOSTNAME && ~process.env.WEBSITE_HOSTNAME.indexOf("azure") ? true : false;
+}
+
+function getWebsiteHostname() {
+  if (isAzure()) {
+    return process.env.WEBSITE_HOSTNAME;
+  }
+  return process.env.WEBSITE_HOSTNAME || '127.0.0.1';
+}
+
+function getPort() {
+  return process.env.PORT;
+}
+
+function getoAuthCallbackUrl() {
+  if (isHeroku() || isAzure()) {
+    if (getPort() && getPort() != 80) {
+      return 'https://' + getWebsiteHostname() + ':' + getPort() + '/auth/google/callback';
+    } else {
+      return 'https://' + getWebsiteHostname() + '/auth/google/callback';
+    }
+  } else { // localhost runs on http
+    if (getPort() && getPort() != 80) {
+      return 'http://' + getWebsiteHostname() + ':' + getPort() + '/auth/google/callback';
+    } else {
+      return 'http://' + getWebsiteHostname() + '/auth/google/callback';
+    }
+  }
 }
 
 const config = {};
@@ -27,18 +57,11 @@ config.oAuthClientID = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_ID;
 // The OAuth client secret from the Google Developers console.
 config.oAuthclientSecret = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_SECRET;
 
-if (!isHeroku()) {
-  // The callback to use for OAuth requests. This is the URL where the app is
-  // running. For testing and running it locally, use 127.0.0.1.
-  config.oAuthCallbackUrl = 'http://127.0.0.1:8111/auth/google/callback';
+config.port = getPort();
+console.log('config.port', config.port);
+config.oAuthCallbackUrl = getoAuthCallbackUrl();
+console.log('config.oAuthCallbackUrl', config.oAuthCallbackUrl);
 
-  // The port where the app should listen for requests.
-  //config.port = 8080;
-  config.port = 8111;
-} else {
-  config.oAuthCallbackUrl = 'https://equinox-21.herokuapp.com/auth/google/callback';
-  config.port = process.env.PORT;
-}
 // The scopes to request. The app requires the photoslibrary.readonly and
 // plus.me scopes.
 config.scopes = [
