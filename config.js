@@ -15,7 +15,7 @@
 // This file contains the configuration options for this sample app.
 
 function isHeroku() {
-  return process.env.FQDN && ~process.env.FQDN.indexOf("heroku") ? true : false;
+  return process.env.WEBSITE_HOSTNAME && ~process.env.WEBSITE_HOSTNAME.indexOf("heroku") ? true : false;
 }
 
 function isAzure() {
