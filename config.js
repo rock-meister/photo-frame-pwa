@@ -30,7 +30,7 @@ function getWebsiteHostname() {
 }
 
 function getPort() {
-  return process.env.PORT;
+  return process.env.PORT || 8080;
 }
 
 function getoAuthCallbackUrl() {
