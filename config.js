@@ -14,18 +14,8 @@
 
 // This file contains the configuration options for this sample app.
 
-function isHeroku() {
-  return process.env.WEBSITE_HOSTNAME && ~process.env.WEBSITE_HOSTNAME.indexOf("heroku") ? true : false;
-}
-
-function isAzure() {
-  return process.env.WEBSITE_HOSTNAME && ~process.env.WEBSITE_HOSTNAME.indexOf("azure") ? true : false;
-}
 
 function getWebsiteHostname() {
-  if (isAzure()) {
-    return process.env.WEBSITE_HOSTNAME;
-  }
   return process.env.WEBSITE_HOSTNAME || '127.0.0.1';
 }
 
@@ -33,20 +23,22 @@ function getPort() {
   return process.env.PORT || 8080;
 }
 
+function isLocalhost() {
+  return ((getWebsiteHostname() == '127.0.0.1') || (getWebsiteHostname() == 'localhost'));
+}
+
+function httpPrefix() {
+  return isLocalhost() ? 'http' : 'https';
+}
+
+function portSuffix() {
+  return getPort() == 80 ? '' : ':' + getPort();
+}
+
+
+
 function getoAuthCallbackUrl() {
-  if (isHeroku() || isAzure()) {
-    if (getPort() && getPort() != 80) {
-      return 'https://' + getWebsiteHostname() + ':' + getPort() + '/auth/google/callback';
-    } else {
-      return 'https://' + getWebsiteHostname() + '/auth/google/callback';
-    }
-  } else { // localhost runs on http
-    if (getPort() && getPort() != 80) {
-      return 'http://' + getWebsiteHostname() + ':' + getPort() + '/auth/google/callback';
-    } else {
-      return 'http://' + getWebsiteHostname() + '/auth/google/callback';
-    }
-  }
+  return httpPrefix() + '://' + getWebsiteHostname() + portSuffix() + '/auth/google/callback';
 }
 
 const config = {};
@@ -61,6 +53,10 @@ config.port = getPort();
 console.log('config.port', config.port);
 config.oAuthCallbackUrl = getoAuthCallbackUrl();
 console.log('config.oAuthCallbackUrl', config.oAuthCallbackUrl);
+console.log('NODE_ENV=', process.env.NODE_ENV);
+console.log('PORT=', process.env.PORT);
+console.log('WEBSITE_HOSTNAME=', process.env.WEBSITE_HOSTNAME);
+
 
 // The scopes to request. The app requires the photoslibrary.readonly and
 // plus.me scopes.
