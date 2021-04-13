@@ -35,10 +35,13 @@ function portSuffix() {
   return getPort() == 80 ? '' : ':' + getPort();
 }
 
-
+function isHeroku() {
+  return process.env.NODE && ~process.env.NODE.indexOf("heroku") ? true : false;
+}
 
 function getoAuthCallbackUrl() {
-  return httpPrefix() + '://' + getWebsiteHostname() + portSuffix() + '/auth/google/callback';
+  return httpPrefix() + '://' + getWebsiteHostname() + ( isHeroku() ? '' : portSuffix())  + '/auth/google/callback';
+  // https://help.heroku.com/P0AVPANS/why-is-my-node-js-app-crashing-with-an-r10-error
 }
 
 const config = {};
@@ -50,6 +53,7 @@ config.oAuthClientID = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_ID;
 config.oAuthclientSecret = process.env.PHOTO_FRAME_PWA_GAPI_CLIENT_SECRET;
 
 config.port = getPort();
+console.log("isHeroku() = " + isHeroku())
 console.log('config.port', config.port);
 config.oAuthCallbackUrl = getoAuthCallbackUrl();
 console.log('config.oAuthCallbackUrl', config.oAuthCallbackUrl);
