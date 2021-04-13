@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - photoframepwa(ramana-dev)
 on:
   push:
     branches:
-      - ramana_dev
+      - ramana-dev
   workflow_dispatch:
 
 jobs:
