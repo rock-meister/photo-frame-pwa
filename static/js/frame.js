@@ -115,6 +115,7 @@ function loadQueue() {
     success: (data) => {
       // Queue has been loaded. Display the media items as a grid on screen.
       hideLoadingDialog();
+      data.photos = data.photos.sort( (a,b) => Math.random() - Math.random())
       showPreview(data.parameters, data.photos);
       hideLoadingDialog();
       if ( data.photos) setTimeout ( (e) => $('#images-container a').first().click(), 30);
@@ -140,6 +141,14 @@ $(document).ready(() => {
   $('#startSlideshow')
       .on('click', (e) => $('#images-container a').first().click());
 
+
+  $('#shufflePics')
+    .on('click', (e) => {
+      var ic = document.querySelector('#images-container')
+      for (var i = ic.children.length; i >= 0; i--) {
+        ic.appendChild(ic.children[Math.random() * i | 0]);
+      }
+    });
 
   // Clicking log out opens the log out screen.
   $('#logout').on('click', (e) => {
