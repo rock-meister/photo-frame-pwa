@@ -1,6 +1,6 @@
 # Photo Frame Sample
 
-This is a Node.js sample application for the [Google Photos Library API](https://developers.google.com/photos).
+This is a ***Not At all*** Node.js sample application for the [Google Photos Library API](https://developers.google.com/photos).
 
 This sample shows how to connect an app with Google Photos through OAuth 2.0 and display a user's photos and albums in an "online photo frame".
 
