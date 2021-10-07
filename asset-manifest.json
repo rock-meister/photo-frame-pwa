@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/google-photo-viewer-sample/static/css/main.dc720e9e.chunk.css",
+    "main.js": "/google-photo-viewer-sample/static/js/main.9be99f75.chunk.js",
+    "main.js.map": "/google-photo-viewer-sample/static/js/main.9be99f75.chunk.js.map",
+    "runtime~main.js": "/google-photo-viewer-sample/static/js/runtime~main.cbb6b75a.js",
+    "runtime~main.js.map": "/google-photo-viewer-sample/static/js/runtime~main.cbb6b75a.js.map",
+    "static/js/2.79b7c8a2.chunk.js": "/google-photo-viewer-sample/static/js/2.79b7c8a2.chunk.js",
+    "static/js/2.79b7c8a2.chunk.js.map": "/google-photo-viewer-sample/static/js/2.79b7c8a2.chunk.js.map",
+    "index.html": "/google-photo-viewer-sample/index.html",
+    "precache-manifest.53521efc6ae9a82fd086a24535d8c3b7.js": "/google-photo-viewer-sample/precache-manifest.53521efc6ae9a82fd086a24535d8c3b7.js",
+    "service-worker.js": "/google-photo-viewer-sample/service-worker.js",
+    "static/css/main.dc720e9e.chunk.css.map": "/google-photo-viewer-sample/static/css/main.dc720e9e.chunk.css.map"
+  }
+}

@@ -1,0 +1,364 @@
+<html>
+
+<!-- https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#js-client-library_4 -->
+
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"
+/>
+
+<!-- <h2>FANCY BOX</h2>
+<a data-fancybox="single" data-src="https://lipsum.app/id/1/800x600">
+	<img src="https://lipsum.app/id/1/300x225" />
+ </a> -->
+
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/jquery.fancybox.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/jquery.fancybox.min.css"></script>
+-->
+<script>
+	var GoogleAuth;
+	// IISC = {
+	// 	"id": "AOrPrCEQFY2Q7fEgn7C-OcgZ0lrFHem0qqgxQvhOKEpVAiaWqFlsuB18-wM90sNvrzDPBiVJAeJf",
+	// 	"title": "iisc 8889",
+	// 	"productUrl": "https://photos.google.com/lr/album/AOrPrCEQFY2Q7fEgn7C-OcgZ0lrFHem0qqgxQvhOKEpVAiaWqFlsuB18-wM90sNvrzDPBiVJAeJf",
+	// 	"mediaItemsCount": "186",
+	// 	"coverPhotoBaseUrl": "https://lh3.googleusercontent.com/lr/AFBm1_boobqctDTuhXOrdpk2utdcPZY20wIedIYBPLQ99RrtAQ0r7qJN0YNRgG6Scj9tgGr_aqMt5OLOJO6LKATgCY99n_B2O8Vo-sCIkzHe7fCxrfTadc3wBVz_l_pHkWSq9TZ0YCRgs8QHIJqQRLF60zlpkxdMEEDNZ3EuQKAhfLNjhNwwKxod54aJmH26Dq78I17qjgkyITcZ-HJ8mVyrJcMc2bt39qDOGzbNOnQv7QTXT-EZj-aJ5UzeA8AZnSoVBPrWluuug9QWUhkRWiT1Y1LlNSZSCkVomywn0DqrIcADagkald7Rl1Uki61dvd9GgCSLo01oA3ry6My-K9_Yu0iPl_mZANeAm5WgOrGkuXKazr0xrl394oHy6KohW8OcdmUxpDgih8EKxlewL8jifmt4-yxvRPCsuguDso459phH5irqaGKeSvuQ-gyAdcCcAPOT-xb2mfFzffaFi5ALGAa04oycwCtALKMOT6FxTtr7MAmyq2DZZFQJq7uweoHHbBUyiZaVSTI0vCcnsfHtwv2UnnitMi_VFGJK0uAk4vZDj046MdVz-oVQOgDl_L_MBv0i_1JOIvVrgMXRvpQkoORemzPTpwSNnIbwf94ZEv-3TLiQz46yFvjQEKCNqtesYKLdRJ_EFMMru9y-MnLPQUaAmrV6DDYtERu4lfeAl9kqZ8TYBAPaVzuExSKLopzVSQrf22XCXY2koxuhNgNxP4ElvK_KGEQQ7xlBmsQBeHirPBaNUvbYcvIxMpQ-6CFx1vMjc89JIKue7pY0kryj63ecJPs7yEF3TZhUYzs",
+	// 	"coverPhotoMediaItemId": "AOrPrCHWsSH6diotlkPJ-_PKeLRnFssT6I9tktuAaIHfnMrpnk1DOzEh0KvH171KgrVcyDscfOhxTd_be6vePtQsyvwnxX-n8w"
+	// };
+	var SCOPE = 'https://www.googleapis.com/auth/photoslibrary.readonly';
+	// var SCOPE = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+
+	function handleClientLoad() {
+		// Load the API's client and auth2 modules.
+		// Call the initClient function after the modules load.
+		// gapi.load('client:auth2', initClient);
+		console.log("Here 513")
+		gapi.load('client:auth2', initClient);
+	}
+
+	function initClient() {
+		// In practice, your app can retrieve one or more discovery documents.
+		console.log("Here 519")
+		var discoveryUrl = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
+
+		// Initialize the gapi.client object, which app uses to make API requests.
+		// Get API key and client ID from API Console.
+		// 'scope' field specifies space-delimited list of access scopes.
+		gapi.client.init({
+			// 'apiKey': 'YOUR_API_KEY',
+			'clientId': '692282879487-u18ri74pmpues6jg4nh5hmkurqk0ras9.apps.googleusercontent.com',
+			// 'discoveryDocs': [discoveryUrl],
+			'discoveryDocs': [],
+			'scope': SCOPE
+		}).then(function () {
+			console.log("gapi.client.init")
+			GoogleAuth = gapi.auth2.getAuthInstance();
+
+			// Listen for sign-in state changes.
+			GoogleAuth.isSignedIn.listen(updateSigninStatus);
+
+			// Handle initial sign-in state. (Determine if user is already signed in.)
+			var user = GoogleAuth.currentUser.get();
+			setSigninStatus();
+
+			// Call handleAuthClick function when user clicks on
+			//      "Sign In/Authorize" button.
+			$('#sign-in-or-out-button').click(function () {
+				handleAuthClick();
+			});
+			$('#revoke-access-button').click(function () {
+				revokeAccess();
+			});
+		}, function (e) {
+			console.log("Error gapi.client.init " + e)
+			console.log(e)
+		});
+	}
+
+	function handleAuthClick() {
+		console.log("Here 1")
+		if (GoogleAuth.isSignedIn.get()) {
+			// User is authorized and has clicked "Sign out" button.
+			GoogleAuth.signOut();
+		} else {
+			// User is not signed in. Start Google auth flow.
+			GoogleAuth.signIn();
+		}
+	}
+
+	function revokeAccess() {
+		GoogleAuth.disconnect();
+	}
+
+	function setSigninStatus() {
+		var user = GoogleAuth.currentUser.get();
+		var isAuthorized = user.hasGrantedScopes(SCOPE);
+		if (isAuthorized) {
+			$('#sign-in-or-out-button').html('Sign Out!!!!!');
+			$('#revoke-access-button').css('display', 'inline-block');
+			$('#auth-status').html('You are currently signed in and have granted ' +
+				'access to this app.');
+			console.log("TODO: List the albums " + user)
+			console.log(user)
+			// loadAlbums() // please
+			// getAllPhotoGoogleApi() 
+			listAlbums()
+		} else {
+			$('#sign-in-or-out-button').html('Sign In/Authorize!!!!!');
+			$('#revoke-access-button').css('display', 'none');
+			$('#auth-status').html('You have not authorized this app or you are ' +
+				'signed out.');
+		}
+	}
+
+	function updateSigninStatus() {
+		setSigninStatus();
+	}
+
+	function loadAlbums() {
+		console.log("Here g" + gapi)
+		console.log("Here gc" + gapi.client)
+		console.log("Here gcp" + gapi.client.photoslibrary)
+		console.log("Here gcpa" + gapi.client.photoslibrary.album)
+		client
+		return gapi.client.photoslibrary.albums
+			.list({})
+			.then(function (fullResponse) {
+				// { result: { albums } }
+				const albums = fullResponse.result.albums;
+				console.log(albums)
+				// Handle the results here (response.result has the parsed body).
+				return albums;
+			});
+  	}
+
+	// check if object is an array
+	function isArray(obj) {
+		return Object.prototype.toString.call(obj) === '[object Array]';
+	}
+
+	// AF1QipNWaLn0B_oCcSzDzMUHFJoeI1gUT-8IoJj9leXS Aatree
+	// https://stackoverflow.com/questions/51271207/how-to-access-google-photos-api-with-javascript-using-google-api-javascript-clie
+	PATH_LIST_ALBUMS = "https://photoslibrary.googleapis.com/v1/sharedAlbums?pageSize=10"
+	PATH_SEARCH_ALBUMS = "https://photoslibrary.googleapis.com/v1/mediaItems:search"
+
+	function listAlbums() { 
+		gapi.client.request({
+			// 'path': 'https://photoslibrary.googleapis.com/v1/mediaItems:search',
+			'method': 'GET',
+			'path' : PATH_LIST_ALBUMS,
+		}).then(function (response) {
+			// console.log(response)
+			// console.log(response.body)
+			o = evalJSON(response.body).sharedAlbums
+			// console.log(o)
+			// console.log(isArray(o))
+			if (isArray(o)) {
+				sharedAlbums = o
+				sharedAlbums.forEach ( (e,i) => {
+					// console.log(e, i)
+					searchAlbums(e)
+				} )
+			}
+			// console.log(evalJSON(response.body.nextPageToken))
+			// console.log(response);
+			// console.log(`depth ${depth}`)
+			// if (depth < 10) getAllPhotoGoogleApi(response.body.nextPageToken, depth+1);
+
+		}, function (reason) {
+			console.log("error? reason")
+			console.log(reason);
+			console.log(reason.body)
+		});
+	}
+
+	function  showImage(url) {
+		console.log("showImage")
+		console.log(url)
+		img = createImage(url)
+		box = document.getElementById('photos-list')
+		console.log("box===========" , box)
+		box.appendChild(img)
+	}
+
+	// create an image tag
+	function createImage(url) {
+		console.log("createImage")
+		console.log(url)
+		// $('#image').attr('src', url)
+		var img = document.createElement('img')
+		img.src = url
+		img.style.width = '100%'
+		img.style.height = '100%'
+		img.style.display = 'block'
+		return img
+	}
+
+	function searchAlbums(album_info) { 
+		gapi.client.request({
+			'method': 'POST',
+			'path' : PATH_SEARCH_ALBUMS,
+			'body': {
+				"albumId": album_info.id, 
+				// "filters": { // "mediaTypeFilter": { "mediaTypes": ["PHOTO"] } }
+			}
+		}).then(function (response) {
+			// console.log(response)
+			// console.log([`== ${album_info.title}` , response.body.mediaItems.map( (e,i) => e.filename) ]. join("\n"))
+			o = evalJSON(response.body).mediaItems
+			console.log([`== ${album_info.title}`]. join("\n"))
+			// console.log(o)
+			// console.log([`== ${album_info.title}` , o.map( (e,i) => e.filename) ])
+			// console.log([`== ${album_info.title}` , o.map( (e,i) => {
+			// 	album_info.title.match(/^.*iisc.*$/i) 
+			// 		?  showImage(e.baseUrl) 
+			// 		:  null
+			// })])
+			 if (album_info.title.match(/^.*iisc.*$/i)) 
+			 	photoFancyBox(o)
+			// console.log(evalJSON(response.body.nextPageToken))
+			// console.log(response);
+			// console.log(`depth ${depth}`)
+			// if (depth < 10) getAllPhotoGoogleApi(response.body.nextPageToken, depth+1);
+
+		}, function (reason) {
+			console.log("error? reason")
+			console.log(reason);
+			console.log(reason.body)
+		});
+	}
+
+	function ixxgetAllPhotoGoogleApi(path=PATH_LIST_ALBUMS, method="GET", nextToken="", depth=0) { 
+		gapi.client.request({
+			// 'path': 'https://photoslibrary.googleapis.com/v1/mediaItems:search',
+			'method': method,
+			// 'path' : 'https://photoslibrary.googleapis.com/v1/mediaItems?pageSize=100' + (nextToken ? "&pageToken=" + nextToken : ""),
+			// 'path' : 'https://photoslibrary.googleapis.com/v1/sharedAlbums?pageSize=10',
+			'path' : path,
+			// 'body': {
+			// 	// "albumId" : "AF1QipMc84tVr3fr3nE6GLySntU_qqh70OdVmIQykWi9"  //z2
+			// 	// "albumId": "AF1QipNWaLn0B_oCcSzDzMUHFJoeI1gUT-8IoJj9leXS"
+			// 	// "albumId": "Aatree"
+			// 	// "filters": { // "mediaTypeFilter": { "mediaTypes": ["PHOTO"] } }
+			// }
+		}).then(function (response) {
+			// console.log(response)
+			// console.log(response.body)
+			o = evalJSON(response.body)
+			if ( isArray()) {
+				sharedAlbums = o
+				sharedAlbums.forEach ( (e,i) => {
+					getAllPhotoGoogleApi(PATH_SEARCH_ALBUMS, "GET", e.id, depth+1)
+				} )
+			}
+			// console.log(evalJSON(response.body.nextPageToken))
+			// console.log(response);
+			// console.log(`depth ${depth}`)
+			// if (depth < 10) getAllPhotoGoogleApi(response.body.nextPageToken, depth+1);
+
+		}, function (reason) {
+			console.log("error? reason")
+			console.log(reason);
+			console.log(reason.body)
+		});
+	}
+	// evaluate a JSON String
+	function evalJSON(json) {
+		// console.log("evalJSON " + json)
+		return JSON.parse(json);
+	}
+
+
+</script>
+
+<button id="sign-in-or-out-button" style="margin-left: 25px">SignIn/Authorize!!!!!</button>
+<button id="revoke-access-button" style="display: none; margin-left: 25px">Revoke access</button>
+
+<div id="auth-status" style="display: inline; padding-left: 25px"></div>
+<hr>
+<div id="photos-list" style="display: inline; padding-left: 25px">
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+	onreadystatechange="if (this.readyState === 'complete') this.onload()">
+</script>
+
+<script>
+
+function demoFancyBox() {  // from https://fancyapps.com/fancybox/3/ https://fancyapps.com/docs/ui/fancybox/plugins/image
+	var gallery = [
+	{
+	src: "https://lipsum.app/id/2/800x600",
+	thumb: "https://lipsum.app/id/2/80x80",
+	caption: "First image",
+	},
+	{
+	src: "https://lipsum.app/id/3/800x600",
+	thumb: "https://lipsum.app/id/3/80x80",
+	caption: "Second image",
+	},
+	{
+	src: "https://lipsum.app/id/4/800x600",
+	thumb: "https://lipsum.app/id/4/80x80",
+	caption: "Third image",
+	},
+	];
+
+	Fancybox.show(gallery, {
+	Image: {
+	// Image-specific options go here, for example:
+	// click: 'close'
+	},
+	});
+}
+
+function photoFancyBox(o) {  
+	console.log("photoFancyBox")
+	gallery = o.map ( (e,i) => {
+		// console.log(e)
+		// console.log(e.baseUrl)
+		return  {
+			src: e.baseUrl
+			// thumb : e.baseUrl
+			// caption : e.description
+		}
+	})
+	console.log(gallery)
+	Fancybox.show(gallery, { Image: { }, });
+}
+</script>
+
+
+<script>
+	function initApp() {
+		//do something later
+		console.log("called initApp")
+	}
+
+
+	(function () {
+		console.log("Try to register service worker")
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker
+				.register('./service-worker.js')
+				.then(function () {
+					console.log('Service Worker Registered');
+				})
+				.then(function () {
+					window.onload = function () {
+						initApp();
+					}
+				});
+		} else {
+			window.onload = function () {
+				console.log('Service Worker not supported');
+				// initApp();
+			};
+		}
+	})();
+</script>
+
+</html>
